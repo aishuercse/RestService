@@ -45,4 +45,16 @@ public class MessageServiceImpl implements MessageService {
 		return messageResource;
 	}
 
+	/**
+	 * @author amit
+	 * @param messageResource
+	 * @throws SQLException
+	 * Add a new message record. 
+	 */
+	@Override
+	public void addMessage(MessageResource messageResource) throws SQLException {
+		MessageDao messageDao = new MessageDaoImpl();
+		messageDao.addMessage(messageResource);
+	}
+
 }

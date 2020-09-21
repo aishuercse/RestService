@@ -73,21 +73,18 @@ public class MessageDaoImpl implements MessageDao {
 	 * @author amit
 	 * @param messageResource
 	 * @return
-	 * Insert a new record in message table.
+	 * @throws SQLException
+	 * Insert a new record in message table. 
 	 */
 	@Override
-	public void addMessage(MessageResource messageResource) {
-		try {
-			Connection connection = DBUtil.getConnection();
-			String query = "insert into table values(?,?,?,?)";
-			java.sql.PreparedStatement stmt = connection.prepareStatement(query);
-			stmt.setInt(1, messageResource.getId());
-			stmt.setString(2, messageResource.getMessage());
-			stmt.setString(3, messageResource.getAuthor());
-			stmt.setTimestamp(4, (Timestamp) messageResource.getPostedDate());
-		} catch (Exception e) {
-			logger.error("error occurred while trying to insert message: " + e.getMessage());
-		}
+	public void addMessage(MessageResource messageResource) throws SQLException {
+		Connection connection = DBUtil.getConnection();
+		String query = "insert into table values(?,?,?,?)";
+		java.sql.PreparedStatement stmt = connection.prepareStatement(query);
+		stmt.setInt(1, messageResource.getId());
+		stmt.setString(2, messageResource.getMessage());
+		stmt.setString(3, messageResource.getAuthor());
+		stmt.setTimestamp(4, (Timestamp) messageResource.getPostedDate());
 	}
 
 }
