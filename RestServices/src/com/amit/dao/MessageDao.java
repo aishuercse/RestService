@@ -14,5 +14,7 @@ public interface MessageDao {
 	public List<MessageResource> getMessages() throws SQLException;
 
 	public MessageResource getMessage(int id) throws SQLException;
+	
+	public void addMessage(MessageResource messageResource);
 
 }

@@ -4,6 +4,7 @@ import java.sql.Connection;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.sql.Statement;
+import java.sql.Timestamp;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -66,6 +67,27 @@ public class MessageDaoImpl implements MessageDao {
 		}
 		logger.debug("Retrieved messages from DB based on id");
 		return messageResource;
+	}
+
+	/**
+	 * @author amit
+	 * @param messageResource
+	 * @return
+	 * Insert a new record in message table.
+	 */
+	@Override
+	public void addMessage(MessageResource messageResource) {
+		try {
+			Connection connection = DBUtil.getConnection();
+			String query = "insert into table values(?,?,?,?)";
+			java.sql.PreparedStatement stmt = connection.prepareStatement(query);
+			stmt.setInt(1, messageResource.getId());
+			stmt.setString(2, messageResource.getMessage());
+			stmt.setString(3, messageResource.getAuthor());
+			stmt.setTimestamp(4, (Timestamp) messageResource.getPostedDate());
+		} catch (Exception e) {
+			logger.error("error occurred while trying to insert message: " + e.getMessage());
+		}
 	}
 
 }
