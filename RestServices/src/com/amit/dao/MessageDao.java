@@ -1,4 +1,4 @@
-package com.amit.service;
+package com.amit.dao;
 
 import java.sql.SQLException;
 import java.util.List;
@@ -7,11 +7,12 @@ import com.amit.model.MessageResource;
 
 /**
  * @author amit
- * Service interface for message related business operations.
+ * Dao interface for message.
  */
-public interface MessageService {
+public interface MessageDao {
 
 	public List<MessageResource> getMessages() throws SQLException;
 
 	public MessageResource getMessage(int id) throws SQLException;
+
 }
