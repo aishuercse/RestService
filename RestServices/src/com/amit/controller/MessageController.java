@@ -3,7 +3,9 @@ package com.amit.controller;
 import java.util.ArrayList;
 import java.util.List;
 
+import javax.ws.rs.Consumes;
 import javax.ws.rs.GET;
+import javax.ws.rs.POST;
 import javax.ws.rs.Path;
 import javax.ws.rs.PathParam;
 import javax.ws.rs.Produces;
@@ -56,5 +58,20 @@ public class MessageController {
 			logger.info("Error while retrieved message based on message id: " + e.getMessage());
 		}
 		return messageResource;
+	}
+	
+	/**
+	 * Create a new message using rest service.
+	 * @param messageResource
+	 */
+	@POST
+	@Consumes(MediaType.APPLICATION_JSON)
+	public void createMessage(MessageResource messageResource) {
+		try {
+			MessageService messageService = new MessageServiceImpl();
+			messageService.addMessage(messageResource);
+		} catch (Exception e) {
+			logger.error("error occurred while creating a new message: " + e.getMessage());
+		}
 	}
 }
