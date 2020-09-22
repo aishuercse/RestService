@@ -65,13 +65,18 @@ public class MessageController {
 	 * @param messageResource
 	 */
 	@POST
+	@Produces(MediaType.TEXT_PLAIN)
 	@Consumes(MediaType.APPLICATION_JSON)
-	public void createMessage(MessageResource messageResource) {
+	public String createMessage(MessageResource messageResource) {
+		String message = "";
 		try {
 			MessageService messageService = new MessageServiceImpl();
 			messageService.addMessage(messageResource);
+			message = "Message added successfully";
 		} catch (Exception e) {
 			logger.error("error occurred while creating a new message: " + e.getMessage());
+			message = "Error occurred while adding message";
 		}
+		return message;
 	}
 }

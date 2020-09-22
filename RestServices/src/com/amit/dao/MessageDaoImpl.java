@@ -79,12 +79,15 @@ public class MessageDaoImpl implements MessageDao {
 	@Override
 	public void addMessage(MessageResource messageResource) throws SQLException {
 		Connection connection = DBUtil.getConnection();
-		String query = "insert into table values(?,?,?,?)";
+		String query = "insert into message values (?,?,?,?)";
 		java.sql.PreparedStatement stmt = connection.prepareStatement(query);
 		stmt.setInt(1, messageResource.getId());
 		stmt.setString(2, messageResource.getMessage());
 		stmt.setString(3, messageResource.getAuthor());
-		stmt.setTimestamp(4, (Timestamp) messageResource.getPostedDate());
+		Timestamp timestamp = new java.sql.Timestamp(messageResource.getPostedDate().getTime());
+		stmt.setTimestamp(4, timestamp);
+		stmt.executeUpdate();
+		logger.info("message added successfully");
 	}
 
 }
