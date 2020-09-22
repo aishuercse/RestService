@@ -1,6 +1,7 @@
 package com.amit.dao;
 
 import java.sql.Connection;
+import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.sql.Statement;
@@ -88,6 +89,27 @@ public class MessageDaoImpl implements MessageDao {
 		stmt.setTimestamp(4, timestamp);
 		stmt.executeUpdate();
 		logger.info("message added successfully");
+	}
+
+	/**
+	 * Update message based on message id
+	 * @author amit
+	 * @param id
+	 * @param messageResource
+	 * @throws SQLException 
+	 */
+	@Override
+	public void updateMessage(int id, MessageResource messageResource) throws SQLException {
+		Connection connection = DBUtil.getConnection();
+		String query = "update message set message=?, author_name=?, posted_date=? where id=?";
+		PreparedStatement psmt = connection.prepareStatement(query);
+		psmt.setString(1, messageResource.getMessage());
+		psmt.setString(2, messageResource.getAuthor());
+		Timestamp timestamp = new java.sql.Timestamp(messageResource.getPostedDate().getTime());
+		psmt.setTimestamp(3, timestamp);
+		psmt.setInt(4, id);
+		psmt.executeUpdate();
+		logger.info("message got updated successfully");
 	}
 
 }

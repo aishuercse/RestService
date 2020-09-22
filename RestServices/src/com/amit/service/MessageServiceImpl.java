@@ -57,4 +57,17 @@ public class MessageServiceImpl implements MessageService {
 		messageDao.addMessage(messageResource);
 	}
 
+	/**
+	 * Service method to update message in DB.
+	 * @author amit
+	 * @param id
+	 * @param messageResource
+	 * @throws SQLException
+	 */
+	@Override
+	public void updateMessage(int id, MessageResource messageResource) throws SQLException {
+		MessageDao messageDao = new MessageDaoImpl();
+		messageDao.updateMessage(id, messageResource);
+	}
+
 }
