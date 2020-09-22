@@ -112,4 +112,19 @@ public class MessageDaoImpl implements MessageDao {
 		logger.info("message got updated successfully");
 	}
 
+	/**
+	 * Delete message from DB based on message id
+	 * @author amit
+	 * @param messageId
+	 */
+	@Override
+	public void deleteMessage(int messageId) throws SQLException {
+		Connection connection = DBUtil.getConnection();
+		String query = "delete from message where id=?";
+		PreparedStatement psmt = connection.prepareStatement(query);
+		psmt.setInt(1, messageId);
+		psmt.executeUpdate();
+		logger.info("Message deleted successfully");
+	}
+
 }

@@ -4,6 +4,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 import javax.ws.rs.Consumes;
+import javax.ws.rs.DELETE;
 import javax.ws.rs.GET;
 import javax.ws.rs.POST;
 import javax.ws.rs.PUT;
@@ -122,5 +123,26 @@ public class MessageController {
 			logger.error("error occurred while updating message in DB");
 		}
 		return updatedMessageResource;
+	}
+	
+	/**
+	 * Delete message based on message id
+	 * @param messageId
+	 * @return
+	 */
+	@Path("/{messageId}")
+	@DELETE
+	@Produces(MediaType.TEXT_PLAIN)
+	public String deleteMessage(@PathParam("messageId") int messageId) {
+		String response = "";
+		try {
+			MessageService messageService = new MessageServiceImpl();
+			messageService.deleteMessage(messageId);
+			response = "Message deleted successfully";
+		} catch (Exception e) {
+			logger.error("error occurred while deleting record");
+			response = "Error occurred while deleting message";
+		}
+		return response;
 	}
 }

@@ -70,4 +70,15 @@ public class MessageServiceImpl implements MessageService {
 		messageDao.updateMessage(id, messageResource);
 	}
 
+	/**
+	 * Service method will invoke DAO layer to delete message.
+	 * @author amit
+	 * @param messageId
+	 */
+	@Override
+	public void deleteMessage(int messageId) throws SQLException {
+		MessageDao messageDao = new MessageDaoImpl();
+		messageDao.deleteMessage(messageId);
+	}
+
 }
