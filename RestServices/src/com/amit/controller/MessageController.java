@@ -79,4 +79,25 @@ public class MessageController {
 		}
 		return message;
 	}
+	
+	/**
+	 * Add new message using xml type request
+	 * @param messageResource
+	 * @return
+	 */
+	@POST
+	@Produces(MediaType.TEXT_PLAIN)
+	@Consumes(MediaType.APPLICATION_XML)
+	public String createMessageByXML(MessageResource messageResource) {
+		String message = "";
+		try {
+			MessageService messageService = new MessageServiceImpl();
+			messageService.addMessage(messageResource);
+			message = "Message added successfully";
+		} catch (Exception e) {
+			logger.error("error occurred while creating a new message: " + e.getMessage());
+			message = "Error occurred while adding message";
+		}
+		return message;
+	}
 }
