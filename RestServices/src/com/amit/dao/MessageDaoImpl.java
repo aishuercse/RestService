@@ -127,4 +127,30 @@ public class MessageDaoImpl implements MessageDao {
 		logger.info("Message deleted successfully");
 	}
 
+	/**
+	 * Get list of messages based on author name
+	 * @author amit
+	 * @param author
+	 * @return message list
+	 */
+	@Override
+	public List<MessageResource> getMessages(String author) throws SQLException {
+		Connection connection = DBUtil.getConnection();
+		String query = "select * from message where author_name=?";
+		List<MessageResource> messageList = new ArrayList<MessageResource>();
+		PreparedStatement psmt = connection.prepareStatement(query);
+		psmt.setString(1, author);
+		ResultSet resultSet = psmt.executeQuery();
+		while (resultSet.next()) {
+			MessageResource messageResource = new MessageResource();
+			messageResource.setId(resultSet.getInt(1));
+			messageResource.setMessage(resultSet.getString(2));
+			messageResource.setAuthor(resultSet.getString(3));
+			messageResource.setPostedDate(resultSet.getTimestamp(4));
+			messageList.add(messageResource);
+		}
+		logger.info("Messages list retrieved successfully");
+		return messageList;
+	}
+
 }

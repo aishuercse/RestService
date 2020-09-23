@@ -20,4 +20,6 @@ public interface MessageService {
 	public void updateMessage(int id, MessageResource messageResource) throws SQLException;
 	
 	public void deleteMessage(int messageId) throws SQLException;
+	
+	public List<MessageResource> getMessages(String author) throws SQLException;
 }

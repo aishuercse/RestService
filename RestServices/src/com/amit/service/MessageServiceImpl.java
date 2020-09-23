@@ -81,4 +81,16 @@ public class MessageServiceImpl implements MessageService {
 		messageDao.deleteMessage(messageId);
 	}
 
+	/**
+	 * Service layer method, will interact with DAO layer and get message list.
+	 * @author amit
+	 * @param author
+	 * @return message list
+	 */
+	@Override
+	public List<MessageResource> getMessages(String author) throws SQLException {
+		MessageDao messageDao = new MessageDaoImpl();
+		return messageDao.getMessages(author);
+	}
+
 }

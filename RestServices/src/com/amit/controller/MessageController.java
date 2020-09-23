@@ -11,6 +11,7 @@ import javax.ws.rs.PUT;
 import javax.ws.rs.Path;
 import javax.ws.rs.PathParam;
 import javax.ws.rs.Produces;
+import javax.ws.rs.QueryParam;
 import javax.ws.rs.core.MediaType;
 
 import org.apache.commons.logging.Log;
@@ -29,13 +30,25 @@ public class MessageController {
 	
 	private static Log logger = LogFactory.getLog(MessageController.class);
 	
+	/**
+	 * Invoke get request to retrieve all messages and based on author name.
+	 * This method also accepts query param also. Because we can't keep two
+	 * get requests for same resource URI and query param does not play any
+	 * role in URI construction.
+	 * @param authorName
+	 * @return
+	 */
 	@GET
 	@Produces(MediaType.APPLICATION_JSON)
-	public List<MessageResource> getMessages() {
+	public List<MessageResource> getMessages(@QueryParam("author") String authorName) {
 		List<MessageResource> messagesList = new ArrayList<MessageResource>();
 		try {
 			MessageService messageService = new MessageServiceImpl();
-			messagesList = messageService.getMessages();
+			if (authorName != null) {
+				messagesList = messageService.getMessages(authorName);
+			} else {
+				messagesList = messageService.getMessages();
+			}
 		} catch (Exception e) {
 			logger.error("error occurred while trying to access message list: " + e.getMessage());
 		}
@@ -120,7 +133,7 @@ public class MessageController {
 			messageService.updateMessage(messageId, messageResource);
 			updatedMessageResource = messageService.getMessage(messageId);
 		} catch (Exception e) {
-			logger.error("error occurred while updating message in DB");
+			logger.error("error occurred while updating message in DB: "+e.getMessage());
 		}
 		return updatedMessageResource;
 	}
@@ -140,7 +153,7 @@ public class MessageController {
 			messageService.deleteMessage(messageId);
 			response = "Message deleted successfully";
 		} catch (Exception e) {
-			logger.error("error occurred while deleting record");
+			logger.error("error occurred while deleting record: "+e.getMessage());
 			response = "Error occurred while deleting message";
 		}
 		return response;
