@@ -12,7 +12,9 @@ import javax.ws.rs.Path;
 import javax.ws.rs.PathParam;
 import javax.ws.rs.Produces;
 import javax.ws.rs.QueryParam;
+import javax.ws.rs.core.Context;
 import javax.ws.rs.core.MediaType;
+import javax.ws.rs.core.UriInfo;
 
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
@@ -157,5 +159,18 @@ public class MessageController {
 			response = "Error occurred while deleting message";
 		}
 		return response;
+	}
+	
+	/**
+	 * Getting URI info using context
+	 * @param uriInfo
+	 * @return
+	 */
+	@GET
+	@Path("/context")
+	public String getParamUsingContext(@Context UriInfo uriInfo)
+	{
+		String path= uriInfo.getAbsolutePath().toString();
+		return path;
 	}
 }
