@@ -14,6 +14,8 @@ import javax.ws.rs.Produces;
 import javax.ws.rs.QueryParam;
 import javax.ws.rs.core.Context;
 import javax.ws.rs.core.MediaType;
+import javax.ws.rs.core.Response;
+import javax.ws.rs.core.Response.Status;
 import javax.ws.rs.core.UriInfo;
 
 import org.apache.commons.logging.Log;
@@ -66,7 +68,7 @@ public class MessageController {
 	@Path("/{messageId}")
 	@GET
 	@Produces(MediaType.APPLICATION_XML)
-	public MessageResource getMessage(@PathParam("messageId") int id) {
+	public Response getMessage(@PathParam("messageId") int id) {
 		MessageResource messageResource = null;
 		try {
 			MessageService messageService = new MessageServiceImpl();
@@ -74,7 +76,7 @@ public class MessageController {
 		} catch (Exception e) {
 			logger.info("Error while retrieved message based on message id: " + e.getMessage());
 		}
-		return messageResource;
+		return Response.status(Status.CREATED).entity(messageResource).build();
 	}
 	
 	/**
@@ -128,16 +130,16 @@ public class MessageController {
 	@PUT
 	@Produces(MediaType.APPLICATION_JSON)
 	@Consumes(MediaType.APPLICATION_JSON)
-	public MessageResource updateMessage(@PathParam("messageId") int messageId, MessageResource messageResource) {
+	public Response updateMessage(@PathParam("messageId") int messageId, MessageResource messageResource) {
 		MessageResource updatedMessageResource = null;
 		try {
 			MessageService messageService = new MessageServiceImpl();
 			messageService.updateMessage(messageId, messageResource);
 			updatedMessageResource = messageService.getMessage(messageId);
 		} catch (Exception e) {
-			logger.error("error occurred while updating message in DB: "+e.getMessage());
+			logger.error("error occurred while updating message in DB: " + e.getMessage());
 		}
-		return updatedMessageResource;
+		return Response.status(Status.CREATED).entity(updatedMessageResource).build();
 	}
 	
 	/**
