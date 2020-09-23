@@ -20,13 +20,14 @@ public class MessageServiceImpl implements MessageService {
 	/**
 	 * Interact with DB and retrieve all messages.
 	 * @author amit
+	 * @param url
 	 * @return message resources
 	 * @throws SQLException 
 	 */
 	@Override
-	public List<MessageResource> getMessages() throws SQLException {
+	public List<MessageResource> getMessages(String url) throws SQLException {
 		MessageDao messageDao = new MessageDaoImpl();
-		List<MessageResource> messageList = messageDao.getMessages();
+		List<MessageResource> messageList = messageDao.getMessages(url);
 		logger.info("Retrieved total messages: " + messageList.size());
 		return messageList;
 	}
@@ -85,12 +86,13 @@ public class MessageServiceImpl implements MessageService {
 	 * Service layer method, will interact with DAO layer and get message list.
 	 * @author amit
 	 * @param author
+	 * @param url
 	 * @return message list
 	 */
 	@Override
-	public List<MessageResource> getMessages(String author) throws SQLException {
+	public List<MessageResource> getMessages(String author, String url) throws SQLException {
 		MessageDao messageDao = new MessageDaoImpl();
-		return messageDao.getMessages(author);
+		return messageDao.getMessages(author, url);
 	}
 
 }

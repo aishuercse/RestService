@@ -1,6 +1,8 @@
 package com.amit.model;
 
+import java.util.ArrayList;
 import java.util.Date;
+import java.util.List;
 
 import javax.xml.bind.annotation.XmlRootElement;
 
@@ -15,6 +17,7 @@ public class MessageResource {
 	private String Message;
 	private String author;
 	private Date postedDate;
+	List<Link> links= new ArrayList<Link>();
 	/**
 	 * Default constructor
 	 */
@@ -89,5 +92,25 @@ public class MessageResource {
 	 */
 	public void setPostedDate(Date postedDate) {
 		this.postedDate = postedDate;
+	}
+
+	/**
+	 * @return the links
+	 */
+	public List<Link> getLinks() {
+		return links;
+	}
+
+	/**
+	 * @param links the links to set
+	 */
+	public void setLinks(List<Link> links) {
+		this.links = links;
+	}
+	
+	public void addLink(String url, String rel)
+	{
+		Link link= new Link(url, rel);
+		links.add(link);
 	}
 }

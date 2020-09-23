@@ -11,7 +11,7 @@ import com.amit.model.MessageResource;
  */
 public interface MessageService {
 
-	public List<MessageResource> getMessages() throws SQLException;
+	public List<MessageResource> getMessages(String url) throws SQLException;
 
 	public MessageResource getMessage(int id) throws SQLException;
 	
@@ -21,5 +21,5 @@ public interface MessageService {
 	
 	public void deleteMessage(int messageId) throws SQLException;
 	
-	public List<MessageResource> getMessages(String author) throws SQLException;
+	public List<MessageResource> getMessages(String author, String url) throws SQLException;
 }

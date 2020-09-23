@@ -24,12 +24,13 @@ public class MessageDaoImpl implements MessageDao {
 	private static Log logger = LogFactory.getLog(MessageDaoImpl.class);
 	/**
 	 * @author amit
+	 * @param url
 	 * @return message list
 	 * @throws SQLException 
 	 * Get all messages from DB.
 	 */
 	@Override
-	public List<MessageResource> getMessages() throws SQLException {
+	public List<MessageResource> getMessages(String url) throws SQLException {
 		Connection connection = DBUtil.getConnection();
 		Statement statement = connection.createStatement();
 		ResultSet resultSet = statement.executeQuery("select * from message");
@@ -40,6 +41,7 @@ public class MessageDaoImpl implements MessageDao {
 			messageResource.setMessage(resultSet.getString(2));
 			messageResource.setAuthor(resultSet.getString(3));
 			messageResource.setPostedDate(resultSet.getTimestamp(4));
+			messageResource.addLink(url + resultSet.getInt(1), "self");
 			messageList.add(messageResource);
 		}
 		logger.debug("Retrieved messages from DB successfully");
@@ -131,10 +133,11 @@ public class MessageDaoImpl implements MessageDao {
 	 * Get list of messages based on author name
 	 * @author amit
 	 * @param author
+	 * @param url
 	 * @return message list
 	 */
 	@Override
-	public List<MessageResource> getMessages(String author) throws SQLException {
+	public List<MessageResource> getMessages(String author, String url) throws SQLException {
 		Connection connection = DBUtil.getConnection();
 		String query = "select * from message where author_name=?";
 		List<MessageResource> messageList = new ArrayList<MessageResource>();
@@ -147,6 +150,7 @@ public class MessageDaoImpl implements MessageDao {
 			messageResource.setMessage(resultSet.getString(2));
 			messageResource.setAuthor(resultSet.getString(3));
 			messageResource.setPostedDate(resultSet.getTimestamp(4));
+			messageResource.addLink(url + resultSet.getInt(1), "self");
 			messageList.add(messageResource);
 		}
 		logger.info("Messages list retrieved successfully");

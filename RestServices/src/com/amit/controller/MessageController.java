@@ -40,18 +40,20 @@ public class MessageController {
 	 * get requests for same resource URI and query param does not play any
 	 * role in URI construction.
 	 * @param authorName
+	 * @param uriInfo
 	 * @return
 	 */
 	@GET
 	@Produces(MediaType.APPLICATION_JSON)
-	public List<MessageResource> getMessages(@QueryParam("author") String authorName) {
+	public List<MessageResource> getMessages(@QueryParam("author") String authorName, @Context UriInfo uriInfo) {
 		List<MessageResource> messagesList = new ArrayList<MessageResource>();
+		String urlPath = uriInfo.getAbsolutePath().toString();
 		try {
 			MessageService messageService = new MessageServiceImpl();
 			if (authorName != null) {
-				messagesList = messageService.getMessages(authorName);
+				messagesList = messageService.getMessages(authorName, urlPath);
 			} else {
-				messagesList = messageService.getMessages();
+				messagesList = messageService.getMessages(urlPath);
 			}
 		} catch (Exception e) {
 			logger.error("error occurred while trying to access message list: " + e.getMessage());
@@ -63,16 +65,19 @@ public class MessageController {
 	/**
 	 * Get and return message based on message id
 	 * @param id
+	 * @param uriInfo
 	 * @return
 	 */
 	@Path("/{messageId}")
 	@GET
 	@Produces(MediaType.APPLICATION_XML)
-	public Response getMessage(@PathParam("messageId") int id) {
+	public Response getMessage(@PathParam("messageId") int id, @Context UriInfo uriInfo) {
 		MessageResource messageResource = null;
 		try {
 			MessageService messageService = new MessageServiceImpl();
 			messageResource = messageService.getMessage(id);
+			String url= uriInfo.getAbsolutePath().toString();
+			messageResource.addLink(url, "self");
 		} catch (Exception e) {
 			logger.info("Error while retrieved message based on message id: " + e.getMessage());
 		}
@@ -124,18 +129,22 @@ public class MessageController {
 	 * Update message in DB and return the updated message to the user.
 	 * @param messageId
 	 * @param messageResource
+	 * @param uriInfo
 	 * @return MessageResource
 	 */
 	@Path("/{messageId}")
 	@PUT
 	@Produces(MediaType.APPLICATION_JSON)
 	@Consumes(MediaType.APPLICATION_JSON)
-	public Response updateMessage(@PathParam("messageId") int messageId, MessageResource messageResource) {
+	public Response updateMessage(@PathParam("messageId") int messageId, MessageResource messageResource,
+			@Context UriInfo uriInfo) {
 		MessageResource updatedMessageResource = null;
+		String url = uriInfo.getAbsolutePath().toString();
 		try {
 			MessageService messageService = new MessageServiceImpl();
 			messageService.updateMessage(messageId, messageResource);
 			updatedMessageResource = messageService.getMessage(messageId);
+			updatedMessageResource.addLink(url, "self");
 		} catch (Exception e) {
 			logger.error("error occurred while updating message in DB: " + e.getMessage());
 		}
