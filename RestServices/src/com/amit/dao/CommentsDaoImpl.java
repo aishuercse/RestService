@@ -109,7 +109,7 @@ public class CommentsDaoImpl implements CommentsDao {
 		preparedStatement.setString(2, commentResource.getAuthorName());
 		Timestamp timestamp= new Timestamp(commentResource.getPostedDate().getTime());
 		preparedStatement.setTimestamp(3, timestamp);
-		preparedStatement.setInt(4, commentResource.getId());
+		preparedStatement.setInt(4, commentId);
 		preparedStatement.executeUpdate();
 		logger.info("comment updated successfully");
 	}

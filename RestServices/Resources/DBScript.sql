@@ -7,7 +7,7 @@ insert into message values(4, "second message posted by author2", "author2", now
 
 ================================ Comments table =================================
 create table comment(comment_id integer, comment varchar(50), author_name varchar(20), posted_date timestamp, message_id integer,
-foreign key(comment_id) references message(id) on delete cascade);
+foreign key(message_id) references message(id) on delete cascade);
 
 insert into comment values(1, "first comment on message id 1", "author1", now(), 1);
 insert into comment values(2, "second comment on message id 1", "author1", now(), 1);
