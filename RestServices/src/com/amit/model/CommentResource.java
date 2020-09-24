@@ -8,6 +8,7 @@ public class CommentResource {
 	private String authorName;
 	private String comment;
 	private Date postedDate;
+	private int messageId;
 	
 	public CommentResource() {
 		super();
@@ -59,6 +60,18 @@ public class CommentResource {
 	 */
 	public void setPostedDate(Date postedDate) {
 		this.postedDate = postedDate;
+	}
+	/**
+	 * @return the messageId
+	 */
+	public int getMessageId() {
+		return messageId;
+	}
+	/**
+	 * @param messageId the messageId to set
+	 */
+	public void setMessageId(int messageId) {
+		this.messageId = messageId;
 	}
 	
 }

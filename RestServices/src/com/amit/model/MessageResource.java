@@ -5,6 +5,7 @@ import java.util.Date;
 import java.util.List;
 
 import javax.xml.bind.annotation.XmlRootElement;
+import javax.xml.bind.annotation.XmlTransient;
 
 /**
  * @author amit
@@ -18,6 +19,7 @@ public class MessageResource {
 	private String author;
 	private Date postedDate;
 	List<Link> links= new ArrayList<Link>();
+	List<CommentResource> commentsList;
 	/**
 	 * Default constructor
 	 */
@@ -112,5 +114,20 @@ public class MessageResource {
 	{
 		Link link= new Link(url, rel);
 		links.add(link);
+	}
+
+	/**
+	 * @return the commentsList
+	 */
+	@XmlTransient
+	public List<CommentResource> getCommentsList() {
+		return commentsList;
+	}
+
+	/**
+	 * @param commentsList the commentsList to set
+	 */
+	public void setCommentsList(List<CommentResource> commentsList) {
+		this.commentsList = commentsList;
 	}
 }
