@@ -131,4 +131,30 @@ public class CommentsDaoImpl implements CommentsDao {
 		logger.info("comment deleted successfully");
 	}
 
+	/**
+	 * Find comment based on comment id and author name
+	 * @author amit
+	 * @param commentId
+	 * @param author
+	 * @return comment
+	 */
+	@Override
+	public CommentResource getComment(int commentId, String author) throws SQLException {
+		Connection connection = DBUtil.getConnection();
+		String query = "select * from comment where comment_id=? and author_name=?";
+		PreparedStatement psmt = connection.prepareStatement(query);
+		psmt.setInt(1, commentId);
+		psmt.setString(2, author);
+		ResultSet rs = psmt.executeQuery();
+		CommentResource commentResource = new CommentResource();
+		while (rs.next()) {
+			commentResource.setId(rs.getInt(1));
+			commentResource.setComment(rs.getString(2));
+			commentResource.setAuthorName(rs.getString(3));
+			commentResource.setPostedDate(rs.getTimestamp(4));
+			commentResource.setMessageId(rs.getInt(5));
+		}
+		return commentResource;
+	}
+
 }

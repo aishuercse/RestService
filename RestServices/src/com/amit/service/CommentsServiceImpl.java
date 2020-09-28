@@ -67,4 +67,16 @@ public class CommentsServiceImpl implements CommentsService {
 		commentDao.deleteComment(messageId, commentId);
 	}
 
+	/**
+	 * @author amit
+	 * @param commentId
+	 * @param author
+	 * @return comment
+	 */
+	@Override
+	public CommentResource getComment(int commentId, String author) throws SQLException {
+		CommentsDao commentDao= new CommentsDaoImpl();
+		return commentDao.getComment(commentId, author);
+	}
+
 }

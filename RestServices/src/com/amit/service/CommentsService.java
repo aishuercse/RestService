@@ -16,4 +16,6 @@ public interface CommentsService {
 	public void updateComment(int commentId, CommentResource commentResource) throws SQLException;
 
 	public void deleteComment(int messageId, int commentId) throws SQLException;
+	
+	public CommentResource getComment(int commentId, String author) throws SQLException;
 }

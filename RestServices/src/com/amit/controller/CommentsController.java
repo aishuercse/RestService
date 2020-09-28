@@ -3,6 +3,7 @@ package com.amit.controller;
 import java.util.ArrayList;
 import java.util.List;
 
+import javax.ws.rs.BeanParam;
 import javax.ws.rs.Consumes;
 import javax.ws.rs.DELETE;
 import javax.ws.rs.GET;
@@ -16,6 +17,7 @@ import javax.ws.rs.core.MediaType;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 
+import com.amit.model.CommentParams;
 import com.amit.model.CommentResource;
 import com.amit.service.CommentsService;
 import com.amit.service.CommentsServiceImpl;
@@ -34,11 +36,17 @@ public class CommentsController {
 	@Path("/{messageId}/comments")
 	@GET
 	@Produces(MediaType.APPLICATION_JSON)
-	public List<CommentResource> getComments(@PathParam("messageId") int messageId) {
+	public List<CommentResource> getComments(@PathParam("messageId") int messageId, @BeanParam CommentParams params) {
 		List<CommentResource> commentsList = new ArrayList<CommentResource>();
 		try {
 			CommentsService commentsService = new CommentsServiceImpl();
-			commentsList = commentsService.getComments(messageId);
+			// By default bean param will have default values of parameters.
+			if (params != null && params.getAuthor() != null) {
+				CommentResource commentResource = commentsService.getComment(params.getCommentId(), params.getAuthor());
+				commentsList.add(commentResource);
+			} else {
+				commentsList = commentsService.getComments(messageId);
+			}
 		} catch (Exception e) {
 			logger.error("Error occurred while retrieving comments");
 		}
