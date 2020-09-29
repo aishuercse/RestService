@@ -7,15 +7,18 @@ import java.util.List;
 import javax.xml.bind.annotation.XmlRootElement;
 import javax.xml.bind.annotation.XmlTransient;
 
+import com.fasterxml.jackson.annotation.JsonPropertyOrder;
+
 /**
  * @author amit
  * Bean class to maintain all messages details.
  */
 @XmlRootElement
+@JsonPropertyOrder({ "id", "message", "author", "postedDate" })
 public class MessageResource {
 
 	private int id;
-	private String Message;
+	private String message;
 	private String author;
 	private Date postedDate;
 	List<Link> links= new ArrayList<Link>();
@@ -35,7 +38,7 @@ public class MessageResource {
 	public MessageResource(int id, String message, String author)
 	{
 		this.id= id;
-		this.Message= message;
+		this.message= message;
 		this.author= author;
 		this.postedDate= new Date();
 	}
@@ -58,14 +61,14 @@ public class MessageResource {
 	 * @return the message
 	 */
 	public String getMessage() {
-		return Message;
+		return message;
 	}
 
 	/**
 	 * @param message the message to set
 	 */
 	public void setMessage(String message) {
-		Message = message;
+		this.message = message;
 	}
 
 	/**

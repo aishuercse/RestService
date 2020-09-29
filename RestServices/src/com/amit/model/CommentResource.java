@@ -2,6 +2,9 @@ package com.amit.model;
 
 import java.util.Date;
 
+import com.fasterxml.jackson.annotation.JsonPropertyOrder;
+
+@JsonPropertyOrder({ "id", "authorName", "comment", "postedDate", "messageId" })
 public class CommentResource {
 
 	private int id;
