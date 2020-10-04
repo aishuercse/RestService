@@ -1,3 +1,5 @@
+create database message_db;
+
 ================================ Message table =================================
 create table message(id integer, message varchar(50), author_name varchar(20), posted_date timestamp, primary key(id));
 insert into message values(1, "first message posted by author1", "author1", now());
