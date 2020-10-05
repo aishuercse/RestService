@@ -14,7 +14,7 @@ import com.fasterxml.jackson.annotation.JsonPropertyOrder;
  * Bean class to maintain all messages details.
  */
 @XmlRootElement
-@JsonPropertyOrder({ "id", "message", "author", "postedDate" })
+@JsonPropertyOrder({ "id", "message", "author", "postedDate", "links" })
 public class MessageResource {
 
 	private int id;
