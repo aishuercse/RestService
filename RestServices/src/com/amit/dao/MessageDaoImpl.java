@@ -31,7 +31,7 @@ public class MessageDaoImpl implements MessageDao {
 	 */
 	@Override
 	public List<MessageResource> getMessages(String url) throws SQLException {
-		Connection connection = DBUtil.getConnection();
+		Connection connection = getDBConnection();
 		Statement statement = connection.createStatement();
 		ResultSet resultSet = statement.executeQuery("select * from message");
 		List<MessageResource> messageList = new ArrayList<MessageResource>();
@@ -57,7 +57,7 @@ public class MessageDaoImpl implements MessageDao {
 	 */
 	@Override
 	public MessageResource getMessage(int id) throws SQLException {
-		Connection connection = DBUtil.getConnection();
+		Connection connection = getDBConnection();
 		Statement statement = connection.createStatement();
 		ResultSet resultSet = statement.executeQuery("select * from message where id='" + id + "'");
 		MessageResource messageResource = null;
@@ -81,7 +81,7 @@ public class MessageDaoImpl implements MessageDao {
 	 */
 	@Override
 	public void addMessage(MessageResource messageResource) throws SQLException {
-		Connection connection = DBUtil.getConnection();
+		Connection connection = getDBConnection();
 		String query = "insert into message values (?,?,?,?)";
 		java.sql.PreparedStatement stmt = connection.prepareStatement(query);
 		stmt.setInt(1, messageResource.getId());
@@ -102,7 +102,7 @@ public class MessageDaoImpl implements MessageDao {
 	 */
 	@Override
 	public void updateMessage(int id, MessageResource messageResource) throws SQLException {
-		Connection connection = DBUtil.getConnection();
+		Connection connection = getDBConnection();
 		String query = "update message set message=?, author_name=?, posted_date=? where id=?";
 		PreparedStatement psmt = connection.prepareStatement(query);
 		psmt.setString(1, messageResource.getMessage());
@@ -110,8 +110,12 @@ public class MessageDaoImpl implements MessageDao {
 		Timestamp timestamp = new java.sql.Timestamp(messageResource.getPostedDate().getTime());
 		psmt.setTimestamp(3, timestamp);
 		psmt.setInt(4, id);
-		psmt.executeUpdate();
-		logger.info("message got updated successfully");
+		int execute = psmt.executeUpdate();
+		if (execute == 0) {
+			logger.info("No message uppdated");
+		} else {
+			logger.info("message got updated successfully");
+		}
 	}
 
 	/**
@@ -121,7 +125,7 @@ public class MessageDaoImpl implements MessageDao {
 	 */
 	@Override
 	public void deleteMessage(int messageId) throws SQLException {
-		Connection connection = DBUtil.getConnection();
+		Connection connection = getDBConnection();
 		String query = "delete from message where id=?";
 		PreparedStatement psmt = connection.prepareStatement(query);
 		psmt.setInt(1, messageId);
@@ -138,7 +142,7 @@ public class MessageDaoImpl implements MessageDao {
 	 */
 	@Override
 	public List<MessageResource> getMessages(String author, String url) throws SQLException {
-		Connection connection = DBUtil.getConnection();
+		Connection connection = getDBConnection();
 		String query = "select * from message where author_name=?";
 		List<MessageResource> messageList = new ArrayList<MessageResource>();
 		PreparedStatement psmt = connection.prepareStatement(query);
@@ -157,4 +161,16 @@ public class MessageDaoImpl implements MessageDao {
 		return messageList;
 	}
 
+	/**
+	 * @author amit
+	 * @return connection
+	 * @throws SQLException
+	 */
+	private Connection getDBConnection() throws SQLException {
+		Connection connection = DBUtil.getConnection();
+		if (connection == null) {
+			throw new SQLException("DB connection is null");
+		}
+		return connection;
+	}
 }

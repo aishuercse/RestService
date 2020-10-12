@@ -1,5 +1,6 @@
 package com.amit.controller;
 
+import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -21,6 +22,8 @@ import javax.ws.rs.core.UriInfo;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 
+import com.amit.controller.exception.DataNotFoundException;
+import com.amit.controller.exception.SystemError;
 import com.amit.model.MessageResource;
 import com.amit.service.MessageService;
 import com.amit.service.MessageServiceImpl;
@@ -55,8 +58,12 @@ public class MessageController {
 			} else {
 				messagesList = messageService.getMessages(urlPath);
 			}
-		} catch (Exception e) {
+			if (messagesList.size() == 0) {
+				throw new DataNotFoundException("No message found");
+			}
+		} catch (SQLException e) {
 			logger.error("error occurred while trying to access message list: " + e.getMessage());
+			throw new SystemError("System error occurred");
 		}
 		logger.debug("Returning message list from controller");
 		return messagesList;
@@ -76,12 +83,18 @@ public class MessageController {
 		try {
 			MessageService messageService = new MessageServiceImpl();
 			messageResource = messageService.getMessage(id);
-			String url= uriInfo.getAbsolutePath().toString();
+			// Directly checking if message resource is null because if message
+			// is not found in DB then DAO layer will return null.
+			if (messageResource == null) {
+				throw new DataNotFoundException("No data found for message id: " + id);
+			}
+			String url = uriInfo.getAbsolutePath().toString();
 			messageResource.addLink(url, "self");
-		} catch (Exception e) {
+		} catch (SQLException e) {
 			logger.info("Error while retrieved message based on message id: " + e.getMessage());
+			throw new SystemError("System error occurred");
 		}
-		return Response.status(Status.CREATED).entity(messageResource).build();
+		return Response.status(Status.OK).entity(messageResource).build();
 	}
 	
 	/**
@@ -89,19 +102,17 @@ public class MessageController {
 	 * @param messageResource
 	 */
 	@POST
-	@Produces(MediaType.TEXT_PLAIN)
+	@Produces(MediaType.APPLICATION_JSON)
 	@Consumes(MediaType.APPLICATION_JSON)
-	public String createMessage(MessageResource messageResource) {
-		String message = "";
+	public Response createMessage(MessageResource messageResource) {
 		try {
 			MessageService messageService = new MessageServiceImpl();
 			messageService.addMessage(messageResource);
-			message = "Message added successfully";
-		} catch (Exception e) {
+		} catch (SQLException e) {
 			logger.error("error occurred while creating a new message: " + e.getMessage());
-			message = "Error occurred while adding message";
+			throw new SystemError("System error occurred");
 		}
-		return message;
+		return Response.status(Status.CREATED).build();
 	}
 	
 	/**
@@ -110,19 +121,17 @@ public class MessageController {
 	 * @return
 	 */
 	@POST
-	@Produces(MediaType.TEXT_PLAIN)
+	@Produces(MediaType.APPLICATION_XML)
 	@Consumes(MediaType.APPLICATION_XML)
-	public String createMessageByXML(MessageResource messageResource) {
-		String message = "";
+	public Response createMessageByXML(MessageResource messageResource) {
 		try {
 			MessageService messageService = new MessageServiceImpl();
 			messageService.addMessage(messageResource);
-			message = "Message added successfully";
-		} catch (Exception e) {
+		} catch (SQLException e) {
 			logger.error("error occurred while creating a new message: " + e.getMessage());
-			message = "Error occurred while adding message";
+			throw new SystemError("System error occurred");
 		}
-		return message;
+		return Response.status(Status.CREATED).build();
 	}
 	
 	/**
@@ -144,11 +153,19 @@ public class MessageController {
 			MessageService messageService = new MessageServiceImpl();
 			messageService.updateMessage(messageId, messageResource);
 			updatedMessageResource = messageService.getMessage(messageId);
+			/*
+			 * Directly can check if message is null because if message is not found then
+			 * DAO layer will return null.
+			 */
+			if (updatedMessageResource == null) {
+				throw new DataNotFoundException("No data found for id: " + messageId);
+			}
 			updatedMessageResource.addLink(url, "self");
-		} catch (Exception e) {
+		} catch (SQLException e) {
 			logger.error("error occurred while updating message in DB: " + e.getMessage());
+			throw new SystemError("System error occurred");
 		}
-		return Response.status(Status.CREATED).entity(updatedMessageResource).build();
+		return Response.status(Status.OK).entity(updatedMessageResource).build();
 	}
 	
 	/**
@@ -158,18 +175,16 @@ public class MessageController {
 	 */
 	@Path("/{messageId}")
 	@DELETE
-	@Produces(MediaType.TEXT_PLAIN)
-	public String deleteMessage(@PathParam("messageId") int messageId) {
-		String response = "";
+	@Produces(MediaType.APPLICATION_JSON)
+	public Response deleteMessage(@PathParam("messageId") int messageId) {
 		try {
 			MessageService messageService = new MessageServiceImpl();
 			messageService.deleteMessage(messageId);
-			response = "Message deleted successfully";
-		} catch (Exception e) {
-			logger.error("error occurred while deleting record: "+e.getMessage());
-			response = "Error occurred while deleting message";
+		} catch (SQLException e) {
+			logger.error("error occurred while deleting record: " + e.getMessage());
+			throw new SystemError("System error occurred");
 		}
-		return response;
+		return Response.status(Status.OK).build();
 	}
 	
 	/**

@@ -1,5 +1,6 @@
 package com.amit.controller;
 
+import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -13,10 +14,14 @@ import javax.ws.rs.Path;
 import javax.ws.rs.PathParam;
 import javax.ws.rs.Produces;
 import javax.ws.rs.core.MediaType;
+import javax.ws.rs.core.Response;
+import javax.ws.rs.core.Response.Status;
 
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 
+import com.amit.controller.exception.DataNotFoundException;
+import com.amit.controller.exception.SystemError;
 import com.amit.model.CommentParams;
 import com.amit.model.CommentResource;
 import com.amit.service.CommentsService;
@@ -47,8 +52,12 @@ public class CommentsController {
 			} else {
 				commentsList = commentsService.getComments(messageId);
 			}
-		} catch (Exception e) {
+			if (commentsList.size() == 0) {
+				throw new DataNotFoundException("Comment list not found");
+			}
+		} catch (SQLException e) {
 			logger.error("Error occurred while retrieving comments");
+			throw new SystemError("System error occurred");
 		}
 		return commentsList;
 	}
@@ -63,15 +72,19 @@ public class CommentsController {
 	@Path("/{messageId}/comments/{commentId}")
 	@GET
 	@Produces(MediaType.APPLICATION_JSON)
-	public CommentResource getComments(@PathParam("messageId") int messageId, @PathParam("commentId") int commentId) {
+	public Response getComments(@PathParam("messageId") int messageId, @PathParam("commentId") int commentId) {
 		CommentResource commentResource = new CommentResource();
 		try {
 			CommentsService commentsService = new CommentsServiceImpl();
 			commentResource = commentsService.getComment(messageId, commentId);
-		} catch (Exception e) {
+			if (commentResource.getComment() == null) {
+				throw new DataNotFoundException("No comment found for comment id: " + commentId);
+			}
+		} catch (SQLException e) {
 			logger.error("Error occurred while retrieving comments");
+			throw new SystemError("System error occurred");
 		}
-		return commentResource;
+		return Response.status(Status.OK).entity(commentResource).build();
 	}
 	
 	/**
@@ -80,20 +93,18 @@ public class CommentsController {
 	 * @return response
 	 */
 	@POST
-	@Produces(MediaType.TEXT_PLAIN)
+	@Produces(MediaType.APPLICATION_JSON)
 	@Consumes(MediaType.APPLICATION_JSON)
 	@Path("/{messageId}/comments")
-	public String addComment(CommentResource commentResource) {
-		String response = null;
+	public Response addComment(CommentResource commentResource) {
 		try {
 			CommentsService commentService = new CommentsServiceImpl();
 			commentService.addComment(commentResource);
-			response = "Comment added successfully";
-		} catch (Exception e) {
+		} catch (SQLException e) {
 			logger.error("error occurred while adding new comment");
-			response = "error occurred while adding new comment";
+			throw new SystemError("System error occurred");
 		}
-		return response;
+		return Response.status(Status.CREATED).build();
 	}
 	
 	/**
@@ -107,16 +118,21 @@ public class CommentsController {
 	@Produces(MediaType.APPLICATION_JSON)
 	@Consumes(MediaType.APPLICATION_JSON)
 	@Path("/{messageId}/comments/{commentId}")
-	public CommentResource updateComment(@PathParam("messageId") int messageId, @PathParam("commentId") int commentId, CommentResource commentResource) {
+	public Response updateComment(@PathParam("messageId") int messageId, @PathParam("commentId") int commentId,
+			CommentResource commentResource) {
 		CommentResource updatedcommentResource = new CommentResource();
 		try {
 			CommentsService commentService = new CommentsServiceImpl();
 			commentService.updateComment(commentId, commentResource);
 			updatedcommentResource = commentService.getComment(messageId, commentId);
-		} catch (Exception e) {
+			if (updatedcommentResource.getComment() == null) {
+				throw new DataNotFoundException("No comment found for comment id: " + commentId);
+			}
+		} catch (SQLException e) {
 			logger.error("error occurred while updating the comment");
+			throw new SystemError("System error occurred");
 		}
-		return updatedcommentResource;
+		return Response.status(Status.OK).entity(updatedcommentResource).build();
 	}
 	
 	/**
@@ -128,16 +144,14 @@ public class CommentsController {
 	@Produces(MediaType.TEXT_PLAIN)
 	@DELETE
 	@Path("/{messageId}/comments/{commentId}")
-	public String deleteComment(@PathParam("messageId") int messageId, @PathParam("commentId") int commentId) {
-		String response = null;
+	public Response deleteComment(@PathParam("messageId") int messageId, @PathParam("commentId") int commentId) {
 		try {
 			CommentsService commentService = new CommentsServiceImpl();
 			commentService.deleteComment(messageId, commentId);
-			response = "comment deleted successfully";
-		} catch (Exception e) {
+		} catch (SQLException e) {
 			logger.error("error occurred while deleting record");
-			response = "error occurred while deleting record";
+			throw new SystemError("System error occurred");
 		}
-		return response;
+		return Response.status(Status.OK).build();
 	}
 }
