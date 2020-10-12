@@ -32,8 +32,9 @@ public class DBUtil {
 	 * keeping method as static and creating connection only if it 
 	 * is not already available.
 	 * @return
+	 * @throws SQLException 
 	 */
-	public static Connection getConnection() {
+	public static Connection getConnection() throws SQLException {
 		if (connection == null) {
 			try {
 				Class.forName("com.mysql.cj.jdbc.Driver");
@@ -42,6 +43,7 @@ public class DBUtil {
 				logger.error("Error while loading driver class");
 			} catch (SQLException e) {
 				logger.error("Error while trying to get DB connection");
+				throw new SQLException("Not able to get the connection");
 			}
 		}
 		return connection;

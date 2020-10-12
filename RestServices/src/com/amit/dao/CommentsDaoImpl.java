@@ -27,7 +27,7 @@ public class CommentsDaoImpl implements CommentsDao {
 	 */
 	@Override
 	public List<CommentResource> getComments(int messageId) throws SQLException {
-		Connection connection = getDBConnection();
+		Connection connection = DBUtil.getConnection();
 		List<CommentResource> commentsList = new ArrayList<CommentResource>();
 		String query = "select * from comment where message_id=?";
 		PreparedStatement psmt = connection.prepareStatement(query);
@@ -56,7 +56,7 @@ public class CommentsDaoImpl implements CommentsDao {
 	 */
 	@Override
 	public CommentResource getComment(int messageId, int commentId) throws SQLException {
-		Connection connection = getDBConnection();
+		Connection connection = DBUtil.getConnection();
 		CommentResource commentResource = new CommentResource();
 		String query = "select * from comment where message_id=? and comment_id=?";
 		PreparedStatement psmt = connection.prepareStatement(query);
@@ -81,7 +81,7 @@ public class CommentsDaoImpl implements CommentsDao {
 	 */
 	@Override
 	public void addComment(CommentResource commentResource) throws SQLException {
-		Connection connection = getDBConnection();
+		Connection connection = DBUtil.getConnection();
 		String query = "insert into comment values(?,?,?,?,?)";
 		PreparedStatement psmt = connection.prepareStatement(query);
 		psmt.setInt(1, commentResource.getId());
@@ -102,7 +102,7 @@ public class CommentsDaoImpl implements CommentsDao {
 	 */
 	@Override
 	public void updateComment(int commentId, CommentResource commentResource) throws SQLException {
-		Connection connection = getDBConnection();
+		Connection connection = DBUtil.getConnection();
 		String query = "update comment set comment=?, author_name=?, posted_date=? where comment_id=?";
 		PreparedStatement preparedStatement = connection.prepareStatement(query);
 		preparedStatement.setString(1, commentResource.getComment());
@@ -126,7 +126,7 @@ public class CommentsDaoImpl implements CommentsDao {
 	 */
 	@Override
 	public void deleteComment(int messageId, int commentId) throws SQLException {
-		Connection connection = getDBConnection();
+		Connection connection = DBUtil.getConnection();
 		String query = "delete from comment where message_id=? and comment_id=?";
 		PreparedStatement psmt = connection.prepareStatement(query);
 		psmt.setInt(1, messageId);
@@ -144,7 +144,7 @@ public class CommentsDaoImpl implements CommentsDao {
 	 */
 	@Override
 	public CommentResource getComment(int commentId, String author) throws SQLException {
-		Connection connection = getDBConnection();
+		Connection connection = DBUtil.getConnection();
 		String query = "select * from comment where comment_id=? and author_name=?";
 		PreparedStatement psmt = connection.prepareStatement(query);
 		psmt.setInt(1, commentId);
@@ -159,18 +159,5 @@ public class CommentsDaoImpl implements CommentsDao {
 			commentResource.setMessageId(rs.getInt(5));
 		}
 		return commentResource;
-	}
-
-	/**
-	 * @author amit
-	 * @return connection
-	 * @throws SQLException
-	 */
-	private Connection getDBConnection() throws SQLException {
-		Connection connection = DBUtil.getConnection();
-		if (connection == null) {
-			throw new SQLException("DB connection is null");
-		}
-		return connection;
 	}
 }
