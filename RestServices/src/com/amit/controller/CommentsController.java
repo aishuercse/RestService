@@ -40,7 +40,7 @@ public class CommentsController {
 	 */
 	@Path("/{messageId}/comments")
 	@GET
-	@Produces(MediaType.APPLICATION_JSON)
+	@Produces(value= {MediaType.APPLICATION_JSON, MediaType.APPLICATION_XML})
 	public List<CommentResource> getComments(@PathParam("messageId") int messageId, @BeanParam CommentParams params) {
 		List<CommentResource> commentsList = new ArrayList<CommentResource>();
 		try {
@@ -71,7 +71,7 @@ public class CommentsController {
 	 */
 	@Path("/{messageId}/comments/{commentId}")
 	@GET
-	@Produces(MediaType.APPLICATION_JSON)
+	@Produces(value= {MediaType.APPLICATION_JSON, MediaType.APPLICATION_XML})
 	public Response getComments(@PathParam("messageId") int messageId, @PathParam("commentId") int commentId) {
 		CommentResource commentResource = new CommentResource();
 		try {
@@ -93,7 +93,7 @@ public class CommentsController {
 	 * @return response
 	 */
 	@POST
-	@Produces(MediaType.APPLICATION_JSON)
+	@Produces(value= {MediaType.APPLICATION_JSON, MediaType.APPLICATION_XML})
 	@Consumes(MediaType.APPLICATION_JSON)
 	@Path("/{messageId}/comments")
 	public Response addComment(CommentResource commentResource) {
@@ -115,8 +115,8 @@ public class CommentsController {
 	 * @return comment resource
 	 */
 	@PUT
-	@Produces(MediaType.APPLICATION_JSON)
-	@Consumes(MediaType.APPLICATION_JSON)
+	@Produces(value= {MediaType.APPLICATION_JSON, MediaType.APPLICATION_XML})
+	@Consumes(value= {MediaType.APPLICATION_JSON, MediaType.APPLICATION_XML})
 	@Path("/{messageId}/comments/{commentId}")
 	public Response updateComment(@PathParam("messageId") int messageId, @PathParam("commentId") int commentId,
 			CommentResource commentResource) {
@@ -141,7 +141,7 @@ public class CommentsController {
 	 * @param commentId
 	 * @return response
 	 */
-	@Produces(MediaType.TEXT_PLAIN)
+	@Produces(value= {MediaType.APPLICATION_JSON, MediaType.APPLICATION_XML})
 	@DELETE
 	@Path("/{messageId}/comments/{commentId}")
 	public Response deleteComment(@PathParam("messageId") int messageId, @PathParam("commentId") int commentId) {

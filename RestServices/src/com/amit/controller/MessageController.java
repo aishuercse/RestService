@@ -47,7 +47,7 @@ public class MessageController {
 	 * @return
 	 */
 	@GET
-	@Produces(MediaType.APPLICATION_JSON)
+	@Produces(value= {MediaType.APPLICATION_JSON, MediaType.APPLICATION_XML})
 	public List<MessageResource> getMessages(@QueryParam("author") String authorName, @Context UriInfo uriInfo) {
 		List<MessageResource> messagesList = new ArrayList<MessageResource>();
 		String urlPath = uriInfo.getAbsolutePath().toString();
@@ -77,7 +77,7 @@ public class MessageController {
 	 */
 	@Path("/{messageId}")
 	@GET
-	@Produces(MediaType.APPLICATION_XML)
+	@Produces(value= {MediaType.APPLICATION_JSON, MediaType.APPLICATION_XML})
 	public Response getMessage(@PathParam("messageId") int id, @Context UriInfo uriInfo) {
 		MessageResource messageResource = null;
 		try {
@@ -102,7 +102,7 @@ public class MessageController {
 	 * @param messageResource
 	 */
 	@POST
-	@Produces(MediaType.APPLICATION_JSON)
+	@Produces(value= {MediaType.APPLICATION_JSON, MediaType.APPLICATION_XML})
 	@Consumes(MediaType.APPLICATION_JSON)
 	public Response createMessage(MessageResource messageResource) {
 		try {
@@ -121,7 +121,7 @@ public class MessageController {
 	 * @return
 	 */
 	@POST
-	@Produces(MediaType.APPLICATION_XML)
+	@Produces(value= {MediaType.APPLICATION_JSON, MediaType.APPLICATION_XML})
 	@Consumes(MediaType.APPLICATION_XML)
 	public Response createMessageByXML(MessageResource messageResource) {
 		try {
@@ -143,7 +143,7 @@ public class MessageController {
 	 */
 	@Path("/{messageId}")
 	@PUT
-	@Produces(MediaType.APPLICATION_JSON)
+	@Produces(value= {MediaType.APPLICATION_JSON, MediaType.APPLICATION_XML})
 	@Consumes(MediaType.APPLICATION_JSON)
 	public Response updateMessage(@PathParam("messageId") int messageId, MessageResource messageResource,
 			@Context UriInfo uriInfo) {
@@ -175,7 +175,7 @@ public class MessageController {
 	 */
 	@Path("/{messageId}")
 	@DELETE
-	@Produces(MediaType.APPLICATION_JSON)
+	@Produces(value= {MediaType.APPLICATION_JSON, MediaType.APPLICATION_XML})
 	public Response deleteMessage(@PathParam("messageId") int messageId) {
 		try {
 			MessageService messageService = new MessageServiceImpl();
